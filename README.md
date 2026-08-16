@@ -25,7 +25,49 @@ Abaixo estão as capturas de tela reais do aplicativo em execução em dispositi
 
 ---
 
-## 🎯 Funcionalidades Implementadas
+## 🎓 Principais Aprendizados e Conceitos Aplicados
+
+Durante o desenvolvimento deste projeto prático da **Agenda 02**, foram compreendidos e consolidados os seguintes tópicos fundamentais da engenharia de software móvel:
+
+### 1. Multiplataforma com .NET MAUI e XAML
+- Criação de interfaces declarativas em **XAML** desacopladas da lógica de negócios (**Code-Behind**).
+- Navegação entre telas através do stack do MAUI (`NavigationPage`, `Navigation.PushAsync()` e `Navigation.PopAsync()`).
+- Gerenciamento do ciclo de vida da tela com o evento `OnAppearing()`, garantindo atualização automática e re-renderização dos itens cadastrados ou editados ao retornar à tela principal.
+- Adaptação dinâmica a temas de interface (**Dark Mode / Light Mode**) através de `AppThemeBinding`.
+
+### 2. Banco de Dados Local com SQLite e ORM (`sqlite-net-pcl`)
+- Mapeamento Objeto-Relacional (**ORM**), convertendo a classe `Produto` em uma tabela de banco relacional local usando as diretivas `[PrimaryKey, AutoIncrement]`.
+- Criação e inicialização automática de tabelas na primeira execução do aplicativo.
+- Armazenamento em diretório seguro e isolado da aplicação através de `Environment.SpecialFolder.LocalApplicationData`.
+
+### 3. Programação Assíncrona (`async`, `await` e `Task`)
+- Execução de todas as chamadas de banco de dados em segundo plano (background tasks), impedindo que operações de I/O travem ou congelem a thread de interface gráfica (**UI Thread**).
+
+### 4. Padrão de Projeto Singleton
+- Implementação de instância global e única da conexão com o banco em `App.Db`, evitando abertura concorrente de conexões desnecessárias e vazamentos de memória.
+
+### 5. Boas Práticas de Segurança e Validação de Dados
+- **Prevenção contra SQL Injection:** Uso de queries parametrizadas com placeholders (`?`) em instruções `UPDATE` e `SELECT LIKE`.
+- **Tratamento Robusto de Tipos:** Validação de entradas numéricas com `double.TryParse` e `CultureInfo.InvariantCulture`, aceitando tanto vírgula quanto ponto decimal.
+- **Diálogos de Confirmação:** Uso de `DisplayAlert` modal para confirmar exclusões antes de executar comandos destrutivos no banco de dados.
+
+---
+
+## 🐛 Correções Realizadas sobre o Material Didático
+
+Durante o estudo e implementação do projeto, foram identificados e corrigidos 2 bugs presentes no material da aula:
+
+1. **Correção no Método `Update` (Tipo de Retorno Inválido):**
+   - *Problema do Material:* Indicava retorno `Task<List<Produto>>` para um comando `UPDATE`.
+   - *Correção Aplicada:* Comandos SQL de atualização retornam o número de linhas afetadas. Foi ajustado para `Task<int>` utilizando `_conn.ExecuteAsync(sql, ...)`.
+
+2. **Correção no Método `Search` (Sintaxe SQL Incompleta):**
+   - *Problema do Material:* A query foi escrita sem a cláusula `FROM` (`SELECT * Produto WHERE...`), o que gerava erro de sintaxe no SQLite.
+   - *Correção Aplicada:* Ajustada a sintaxe para `SELECT * FROM Produto WHERE Descricao LIKE ?`, utilizando parâmetros seguros para pesquisa.
+
+---
+
+## 🎯 Funcionalidades do Aplicativo
 
 - [x] **Inserção de Produtos (`Insert`):** Cadastro de itens com descrição, quantidade e preço unitário com validações e feedback por alerta modal.
 - [x] **Listagem Completa (`GetAll`):** Exibição dinâmica em cartões com nome, quantidade, preço unitário e subtotal formatado em moeda (`R$`).
@@ -38,7 +80,7 @@ Abaixo estão as capturas de tela reais do aplicativo em execução em dispositi
 
 ---
 
-## 🛠️ Arquitetura e Estrutura do Código
+## 🛠️ Estrutura do Código
 
 ```
 📁 Fichário_Agenda 02_Desenvolvimento_de_Sistemas_03
@@ -65,28 +107,39 @@ Abaixo estão as capturas de tela reais do aplicativo em execução em dispositi
 ## 🔍 Detalhamento dos Componentes
 
 ### 1. Modelo de Dados (`Models/Produto.cs`)
-Utiliza anotações do pacote `sqlite-net-pcl` para mapear a classe diretamente para uma tabela no banco SQLite:
-- `[PrimaryKey, AutoIncrement] public int Id`: Chave primária gerada sequencialmente pelo banco.
-- `public string Descricao`: Nome do item comprado.
-- `public double Quantidade`: Quantidade de itens (suporta números fracionados como kg ou litros).
-- `public double Preco`: Valor unitário do produto.
-- `public double Total => Quantidade * Preco`: Propriedade calculada em tempo de execução sem redundância no banco.
+```csharp
+using SQLite;
+
+namespace MauiAppMinhasCompras.Models
+{
+    public class Produto
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+        public string Descricao { get; set; } = string.Empty;
+        public double Quantidade { get; set; }
+        public double Preco { get; set; }
+        public double Total => Quantidade * Preco;
+    }
+}
+```
 
 ### 2. Camada de Dados (`Helpers/SQLiteDatabaseHelper.cs`)
-Implementa a comunicação com o banco de dados através da conexão `SQLiteAsyncConnection`, garantindo que nenhuma operação bloqueie a interface gráfica (UI Thread):
-- **Criação da Tabela:** `_conn.CreateTableAsync<Produto>()` executado na inicialização.
-- **Inserir:** `Insert(Produto p)` com retorno assíncrono da quantidade de linhas inseridas.
-- **Atualizar (Correção do Bug 1 do material):** Utiliza `_conn.ExecuteAsync` retornando `Task<int>`.
-- **Excluir:** `Delete(int id)` usando expressão lambda `i => i.Id == id`.
-- **Listar Todos:** `GetAll()` retornando `Task<List<Produto>>`.
-- **Buscar (Correção do Bug 2 do material):** `Search(string q)` com a query SQL correta `SELECT * FROM Produto WHERE Descricao LIKE ?` com parâmetros seguros contra injeção de SQL.
+Implementa todas as operações CRUD de forma assíncrona com SQLite:
+- `Insert(Produto p)` → `_conn.InsertAsync(p)`
+- `Update(Produto p)` → `_conn.ExecuteAsync("UPDATE Produto SET Descricao=?, Quantidade=?, Preco=? WHERE Id=?", ...)`
+- `Delete(int id)` → `_conn.Table<Produto>().DeleteAsync(i => i.Id == id)`
+- `GetAll()` → `_conn.Table<Produto>().ToListAsync()`
+- `Search(string q)` → `_conn.QueryAsync<Produto>("SELECT * FROM Produto WHERE Descricao LIKE ?", "%" + q + "%")`
 
 ### 3. Padrão Singleton Global (`App.xaml.cs`)
-Centraliza o acesso ao banco em uma única instância estática acessível por qualquer tela do aplicativo:
 ```csharp
-public static SQLiteDatabaseHelper Db {
-    get {
-        if (_db == null) {
+public static SQLiteDatabaseHelper Db
+{
+    get
+    {
+        if (_db == null)
+        {
             string pasta = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string path = Path.Combine(pasta, "banco_sqlite_compras.db3");
             _db = new SQLiteDatabaseHelper(path);
@@ -119,19 +172,9 @@ dotnet build -f net9.0-android
 O pacote compilado e pronto para uso está localizado em:
 👉 **`APK_Instalador/MinhasCompras_Android.apk`**
 
-Basta transferir para o smartphone Android e tocar para instalar.
-
 ---
 
-## 📦 Envio para o GitHub
+## 📦 Repositório GitHub
 
-Para subir o projeto para o seu repositório pessoal no GitHub:
-
-```bash
-# 1. Adicionar o link do seu repositório remoto no GitHub
-git remote add origin https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
-
-# 2. Enviar os arquivos para a branch principal
-git branch -M main
-git push -u origin main
-```
+- **URL:** [https://github.com/valdandaconceicao-boop/Fich-rio_Agenda-02_Desenvolvimento_de_Sistemas_03](https://github.com/valdandaconceicao-boop/Fich-rio_Agenda-02_Desenvolvimento_de_Sistemas_03)
+- **Branch:** `main`
