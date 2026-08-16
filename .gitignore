@@ -1,0 +1,17 @@
+## Visual Studio / .NET Core / MAUI
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.DS_Store
+Thumbs.db
+
+## Arquivos internos de roteiro / apresentacao
+ROTEIRO_APRESENTACAO.md
+docs/roteiro-apresentacao.md
+docs/relatorio-comentarios.md

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Tela de Edição e Exclusão de Produto -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppMinhasCompras.Views.EditarProduto"
+             Title="Editar Produto"
+             BackgroundColor="{AppThemeBinding Light=#F4F6F9, Dark=#121212}">
+
+    <!-- Botão de Excluir rápido no canto superior direito -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Excluir" Clicked="ToolbarItem_Clicked_Excluir" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
+            
+            <Label Text="Alterar / Excluir Produto"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light=#2C3E50, Dark=#ECF0F1}"
+                   HorizontalOptions="Center" />
+
+            <!-- Card com os dados do produto para edição -->
+            <Frame CornerRadius="12" Padding="16" HasShadow="True"
+                   BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                   BorderColor="{AppThemeBinding Light=#E2E8F0, Dark=#2D3748}">
+                <VerticalStackLayout Spacing="14">
+                    
+                    <!-- ID do produto (Apenas leitura) -->
+                    <Label Text="Código do Produto (ID):" FontAttributes="Bold" TextColor="Gray" />
+                    <Label x:Name="lbl_id" Text="0" FontAttributes="Bold" FontSize="16" />
+
+                    <!-- Campo Descrição -->
+                    <Label Text="Descrição do Produto" FontAttributes="Bold" />
+                    <Entry x:Name="txt_descricao"
+                           Placeholder="Ex: Arroz Tipo 1 - 5kg"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <!-- Campo Quantidade -->
+                    <Label Text="Quantidade" FontAttributes="Bold" />
+                    <Entry x:Name="txt_quantidade"
+                           Placeholder="Ex: 2"
+                           Keyboard="Numeric" />
+
+                    <!-- Campo Preço Unitário -->
+                    <Label Text="Preço Unitário (R$)" FontAttributes="Bold" />
+                    <Entry x:Name="txt_preco"
+                           Placeholder="Ex: 25.50"
+                           Keyboard="Numeric" />
+
+                    <!-- Botão para Atualizar os dados -->
+                    <Button Text="Atualizar Produto"
+                            Margin="0,15,0,0"
+                            BackgroundColor="#2980B9"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="50"
+                            Clicked="Button_Clicked_Atualizar" />
+
+                    <!-- Botão para Excluir o item -->
+                    <Button Text="Excluir Produto"
+                            BackgroundColor="#E74C3C"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="50"
+                            Clicked="Button_Clicked_Excluir" />
+
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

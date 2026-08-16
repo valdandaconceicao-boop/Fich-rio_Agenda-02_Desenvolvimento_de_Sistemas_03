@@ -1,0 +1,7 @@
+{
+    "dotnet.defaultSolution": "MauiAppMinhasCompras.sln",
+    "omnisharp.useModernNet": true,
+    "omnisharp.enableMsBuildLoadProjectsOnDemand": false,
+    "omnisharp.enableRoslynAnalyzers": true,
+    "csharp.inlayHints.enableInlayHintsForImplicitVariableTypes": true
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Tela de Cadastro de Novo Produto -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppMinhasCompras.Views.NovoProduto"
+             Title="Novo Produto"
+             BackgroundColor="{AppThemeBinding Light=#F4F6F9, Dark=#121212}">
+
+    <!-- Botão de Salvar no canto superior direito da barra de navegação -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Salvar" Clicked="ToolbarItem_Clicked" />
+    </ContentPage.ToolbarItems>
+
+    <!-- ScrollView para garantir que a tela role caso o teclado suba -->
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
+            
+            <Label Text="Cadastrar Produto"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light=#2C3E50, Dark=#ECF0F1}"
+                   HorizontalOptions="Center" />
+
+            <!-- Card com o formulário de cadastro -->
+            <Frame CornerRadius="12" Padding="16" HasShadow="True"
+                   BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                   BorderColor="{AppThemeBinding Light=#E2E8F0, Dark=#2D3748}">
+                <VerticalStackLayout Spacing="14">
+                    
+                    <!-- Campo Descrição -->
+                    <Label Text="Descrição do Produto" FontAttributes="Bold" />
+                    <Entry x:Name="txt_descricao"
+                           Placeholder="Ex: Arroz Tipo 1 - 5kg"
+                           ClearButtonVisibility="WhileEditing" />
+
+                    <!-- Campo Quantidade -->
+                    <Label Text="Quantidade" FontAttributes="Bold" />
+                    <Entry x:Name="txt_quantidade"
+                           Placeholder="Ex: 2"
+                           Keyboard="Numeric" />
+
+                    <!-- Campo Preço Unitário -->
+                    <Label Text="Preço Unitário (R$)" FontAttributes="Bold" />
+                    <Entry x:Name="txt_preco"
+                           Placeholder="Ex: 25.50"
+                           Keyboard="Numeric" />
+
+                    <!-- Botão de Ação Salvar -->
+                    <Button Text="Salvar Produto"
+                            Margin="0,15,0,0"
+                            BackgroundColor="#27AE60"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="50"
+                            Clicked="Button_Clicked_Salvar" />
+
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

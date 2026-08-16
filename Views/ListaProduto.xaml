@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Tela Principal: Listagem dinâmica dos produtos -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:MauiAppMinhasCompras.Models"
+             x:Class="MauiAppMinhasCompras.Views.ListaProduto"
+             Title="Minhas Compras"
+             BackgroundColor="{AppThemeBinding Light=#F4F6F9, Dark=#121212}">
+
+    <!-- Botões da barra superior (Toolbar) -->
+    <ContentPage.ToolbarItems>
+        <!-- Botão para abrir o formulário de cadastro -->
+        <ToolbarItem Text="＋ Novo" Clicked="ToolbarItem_Clicked_Novo" />
+        <!-- Botão para exibir o somatório geral em um alerta -->
+        <ToolbarItem Text="Somar" Clicked="ToolbarItem_Clicked_Somar" />
+    </ContentPage.ToolbarItems>
+
+    <!-- Grid para organizar a busca no topo, a lista no centro e o total embaixo -->
+    <Grid RowDefinitions="Auto, *, Auto">
+        
+        <!-- 1. Barra de Busca com filtro em tempo real -->
+        <SearchBar Grid.Row="0"
+                   x:Name="txt_busca"
+                   Placeholder="Buscar produto pela descrição..."
+                   TextChanged="txt_busca_TextChanged"
+                   SearchButtonPressed="txt_busca_SearchButtonPressed"
+                   Margin="10,8,10,4"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}" />
+
+        <!-- 2. Lista dinâmica que exibe os produtos carregados do SQLite -->
+        <!-- CollectionView é o controle moderno do MAUI: substitui o ListView legado
+             e não sofre o bug de crash do adaptador Android ao rebindar a lista
+             durante a digitação na busca (erro IllegalStateException) -->
+        <CollectionView Grid.Row="1"
+                        x:Name="lista_produtos"
+                        SelectionMode="None"
+                        Margin="10,0">
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Produto">
+                    <Frame Margin="0,5"
+                           Padding="14"
+                           CornerRadius="10"
+                           HasShadow="True"
+                           BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                           BorderColor="{AppThemeBinding Light=#E2E8F0, Dark=#2D3748}">
+
+                        <!-- Toque no card abre a edição.
+                             Usamos TapGestureRecognizer em vez da seleção do CollectionView
+                             porque a seleção é instável no Android quando a lista é rebindada
+                             (erro: toque no item não dispara SelectionChanged) -->
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Frame_Tapped" CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
+                        
+                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                            
+                            <!-- Nome / Descrição do Produto -->
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding Descricao}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#2C3E50, Dark=#ECF0F1}" />
+
+                            <!-- Preço Total deste Item (Qtd x Preço) -->
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding Total, StringFormat='R$ {0:F2}'}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="#27AE60"
+                                   HorizontalOptions="End" />
+
+                            <!-- Quantidade e Preço Unitário -->
+                            <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6" Margin="0,4,0,0">
+                                <Label Text="Qtd:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
+                                <Label Text="{Binding Quantidade}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
+                                <Label Text="|" TextColor="LightGray" FontSize="13" />
+                                <Label Text="Unit:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
+                                <Label Text="{Binding Preco, StringFormat='R$ {0:F2}'}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
+                            </HorizontalStackLayout>
+                            
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- 3. Barra Inferior fixa com o Total Geral de todas as compras -->
+        <Frame Grid.Row="2"
+               BackgroundColor="{AppThemeBinding Light=#2C3E50, Dark=#1A252F}"
+               Padding="16,12"
+               CornerRadius="0"
+               BorderColor="Transparent">
+            <Grid ColumnDefinitions="*, Auto">
+                <Label Grid.Column="0"
+                       Text="Total das Compras:"
+                       TextColor="White"
+                       FontSize="16"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       x:Name="lbl_total_geral"
+                       Text="R$ 0,00"
+                       TextColor="#2ECC71"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Frame>
+
+    </Grid>
+
+</ContentPage>
