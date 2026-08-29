@@ -1,23 +1,29 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MauiAppMinhasCompras.Models;
 
 namespace MauiAppMinhasCompras.Views
 {
-    // Code-behind da tela principal de listagem de produtos
+    // Code-behind da tela principal de listagem de produtos com ObservableCollection
     public partial class ListaProduto : ContentPage
     {
-        // Lista em memória com todos os produtos carregados do banco
+        // Coleção reativa observável vinculada diretamente à interface (CollectionView/ListView)
+        private ObservableCollection<Produto> lista_produtos_colecao = new();
+
+        // Lista em memória com todos os produtos carregados do banco SQLite
         private List<Produto> _todosOsProdutos = new();
 
-        // Flag para bloquear a busca enquanto o banco ainda está carregando
-        // Evita crash (race condition) quando o usuário digita antes do GetAll() terminar
+        // Flag de segurança para bloquear a busca enquanto o banco carrega
         private bool _carregando = true;
 
         public ListaProduto()
         {
             InitializeComponent();
+            
+            // Vincula a ObservableCollection como fonte de dados (ItemsSource)
+            lista_produtos.ItemsSource = lista_produtos_colecao;
         }
 
         // Executado toda vez que a página é exibida ou volta ao foco
@@ -27,14 +33,13 @@ namespace MauiAppMinhasCompras.Views
 
             try
             {
-                // Marca como carregando: desativa a busca até terminar
                 _carregando = true;
 
                 // Carrega todos os produtos do banco SQLite
                 _todosOsProdutos = await App.Db.GetAll() ?? new List<Produto>();
 
-                // Exibe todos os produtos na lista e atualiza o total
-                ExibirLista(_todosOsProdutos);
+                // Atualiza a ObservableCollection com os dados do banco
+                AtualizarColecao(_todosOsProdutos);
             }
             catch (Exception ex)
             {
@@ -42,64 +47,51 @@ namespace MauiAppMinhasCompras.Views
             }
             finally
             {
-                // Libera a busca: agora o usuário pode digitar na SearchBar
                 _carregando = false;
             }
         }
 
-        // Atribui uma lista ao ListView e atualiza o rodapé com o total
-        private void ExibirLista(List<Produto> lista)
+        // Atualiza a coleção reativa e recalcula o valor total na barra inferior
+        private void AtualizarColecao(IEnumerable<Produto> itens)
         {
-            // Atribuir uma nova lista inteira ao ItemsSource é o método mais seguro no Android
-            // Diferente de ObservableCollection.Clear()+Add() que causa crash no adaptador nativo
-            lista_produtos.ItemsSource = lista;
-
-            // Calcula e exibe o total geral no rodapé
-            double total = 0;
-            foreach (var p in lista)
+            lista_produtos_colecao.Clear();
+            foreach (var item in itens)
             {
-                total += p.Total;
+                lista_produtos_colecao.Add(item);
             }
+
+            // Recalcula o somatório dos itens visíveis
+            double total = lista_produtos_colecao.Sum(p => p.Total);
             lbl_total_geral.Text = $"R$ {total:F2}";
         }
 
-        // Disparado a cada caractere digitado ou apagado na SearchBar
+        // Disparado a cada caractere digitado ou apagado na SearchBar (Filtro Instantâneo)
         private void txt_busca_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Se o banco ainda está carregando, ignora a digitação
-            // Isso impede o crash quando o usuário digita antes do OnAppearing terminar
             if (_carregando) return;
 
-            string termo = e.NewTextValue ?? string.Empty;
+            string termo = (e.NewTextValue ?? string.Empty).Trim();
 
             if (string.IsNullOrWhiteSpace(termo))
             {
-                // Sem filtro: exibe todos os produtos em memória
-                ExibirLista(_todosOsProdutos);
+                // Se a busca estiver vazia, exibe todos os produtos
+                AtualizarColecao(_todosOsProdutos);
             }
             else
             {
-                // Filtra em memória (sem acessar o banco) para máxima velocidade e segurança
-                string busca = termo.Trim();
-                List<Produto> filtrados = new();
+                // Filtra em memória RAM instantaneamente usando LINQ
+                var filtrados = _todosOsProdutos.Where(p =>
+                    !string.IsNullOrEmpty(p.Descricao) &&
+                    p.Descricao.Contains(termo, StringComparison.OrdinalIgnoreCase)
+                );
 
-                foreach (var p in _todosOsProdutos)
-                {
-                    if (!string.IsNullOrEmpty(p.Descricao) &&
-                        p.Descricao.Contains(busca, StringComparison.OrdinalIgnoreCase))
-                    {
-                        filtrados.Add(p);
-                    }
-                }
-
-                ExibirLista(filtrados);
+                AtualizarColecao(filtrados);
             }
         }
 
-        // Disparado ao pressionar enter/pesquisar no teclado virtual
+        // Disparado ao pressionar Enter/Pesquisar no teclado virtual
         private void txt_busca_SearchButtonPressed(object sender, EventArgs e)
         {
-            // Reutiliza a mesma lógica do TextChanged
             txt_busca_TextChanged(sender, new TextChangedEventArgs(
                 txt_busca.Text ?? string.Empty,
                 txt_busca.Text ?? string.Empty));
@@ -111,16 +103,12 @@ namespace MauiAppMinhasCompras.Views
             await Navigation.PushAsync(new NovoProduto());
         }
 
-        // Clique no botão "Somar" para exibir o popup com o total
+        // Clique no botão "Somar" para exibir o popup com o total acumulado
         private async void ToolbarItem_Clicked_Somar(object sender, EventArgs e)
         {
             try
             {
-                double total = 0;
-                foreach (var p in _todosOsProdutos)
-                {
-                    total += p.Total;
-                }
+                double total = _todosOsProdutos.Sum(p => p.Total);
                 await DisplayAlert("Total das Compras",
                     $"O valor total acumulado é: R$ {total:F2}", "OK");
             }
@@ -130,18 +118,13 @@ namespace MauiAppMinhasCompras.Views
             }
         }
 
-        // Toque em um card da lista para abrir a tela de edição
-        // Usamos o TapGestureRecognizer do card (ver XAML) porque a seleção
-        // do CollectionView é instável no Android quando a lista é rebindada
+        // Toque no card para abrir a tela de edição
         private async void Frame_Tapped(object sender, TappedEventArgs e)
         {
-            // O CommandParameter do gesto carrega o próprio produto tocado
             if (e.Parameter is Produto produtoSelecionado)
             {
-                // Abre a tela de edição passando o produto selecionado como parâmetro
                 await Navigation.PushAsync(new EditarProduto(produtoSelecionado));
             }
         }
     }
 }
-
