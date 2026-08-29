@@ -2,34 +2,31 @@
 
 Aplicativo desenvolvido em **.NET MAUI 9** com banco local **SQLite**. Nesta Agenda 04, o foco é a implementação de **busca dinâmica de produtos** usando `SearchBar`, evento `TextChanged` e `ObservableCollection<Produto>`.
 
-## O que foi pedido na Agenda 04
+## Requisitos da Agenda 04 atendidos
 
-A atividade pede pesquisa e implementação de busca dinâmica em listas no .NET MAUI, utilizando uma `ObservableCollection` para armazenar os produtos e manter a interface atualizada.
+- [x] Pesquisa sobre .NET MAUI e mecanismos de busca.
+- [x] `SearchBar` na interface.
+- [x] Evento `TextChanged`.
+- [x] Uso de `TextChangedEventArgs` e `NewTextValue`.
+- [x] `ObservableCollection<Produto>` como coleção ligada à interface.
+- [x] Busca dinâmica de produtos pela descrição.
+- [x] Atualização da lista durante a digitação.
+- [x] Persistência em SQLite.
+- [x] Relatório com desafios encontrados.
+- [x] Explicação de como a IA ajudou no aprendizado e revisão.
+- [x] Melhorias possíveis para a funcionalidade.
+- [x] Código disponível no repositório e relatório preparado em PDF para entrega.
 
-No projeto, a implementação funciona assim:
+## Como a busca funciona
 
 1. Os produtos são carregados do SQLite quando a tela aparece.
-2. `_todosOsProdutos` mantém os produtos carregados em memória.
-3. `ObservableCollection<Produto>` é usada como fonte da lista exibida.
+2. `_todosOsProdutos` mantém os produtos em memória.
+3. `ObservableCollection<Produto>` é ligada à `CollectionView` por `ItemsSource`.
 4. A `SearchBar` chama `txt_busca_TextChanged` sempre que o texto muda.
 5. `e.NewTextValue` recebe o texto digitado.
 6. LINQ filtra os produtos pela descrição.
-7. A `ObservableCollection` é atualizada com os resultados.
+7. `AtualizarColecao` atualiza os itens exibidos.
 8. Quando a pesquisa fica vazia, todos os produtos voltam a aparecer.
-
-## Requisitos atendidos
-
-- [x] Projeto em .NET MAUI.
-- [x] SearchBar na interface.
-- [x] Evento `TextChanged`.
-- [x] Uso de `TextChangedEventArgs` e `NewTextValue`.
-- [x] Uso de `ObservableCollection<Produto>`.
-- [x] Busca dinâmica pela descrição do produto.
-- [x] Atualização da lista durante a pesquisa.
-- [x] Persistência em SQLite.
-- [x] Relatório com desafios encontrados.
-- [x] Explicação de como a IA ajudou.
-- [x] Melhorias possíveis para a funcionalidade.
 
 ## SearchBar
 
@@ -44,14 +41,6 @@ Arquivo: `Views/ListaProduto.xaml`
 ```
 
 A lista de produtos é apresentada em uma `CollectionView`.
-
-```xml
-<CollectionView
-    x:Name="lista_produtos"
-    SelectionMode="None">
-    ...
-</CollectionView>
-```
 
 ## ObservableCollection e filtro em tempo real
 
@@ -92,55 +81,49 @@ private void txt_busca_TextChanged(object sender, TextChangedEventArgs e)
 }
 ```
 
-A busca usada pelo `TextChanged` é feita em memória depois que os produtos são carregados do SQLite. O helper também possui um método `Search` com SQL `LIKE`, mas ele fica disponível como método auxiliar e não é o mecanismo usado pelo evento atual.
+A busca usada pelo `TextChanged` acontece em memória depois que os produtos são carregados do SQLite. O helper também possui um método `Search` com SQL `LIKE`, disponível como método auxiliar.
 
 ## Banco SQLite
 
 Arquivo: `Helpers/SQLiteDatabaseHelper.cs`
 
-O projeto mantém as operações principais de banco de dados:
+O projeto mantém as operações de cadastro, leitura, atualização e exclusão, além do método auxiliar de pesquisa. As consultas SQL escritas manualmente utilizam parâmetros `?`.
 
-- `Insert(Produto p)` para cadastrar.
-- `GetAll()` para listar.
-- `Update(Produto p)` para atualizar.
-- `Delete(int id)` para excluir.
-- `Search(string q)` para pesquisa direta no SQLite usando `LIKE`.
+## Pesquisa e uso de IA
 
-As consultas SQL escritas manualmente utilizam parâmetros `?`.
-
-## Relatório da atividade
-
-### Desafios encontrados
-
-O principal desafio foi fazer a pesquisa responder rápido sem consultar o SQLite a cada caractere digitado. Para resolver isso, os produtos são carregados quando a tela aparece e ficam em memória. A busca trabalha nessa lista e atualiza somente a coleção mostrada na tela.
-
-### Como a IA ajudou
-
-A inteligência artificial foi utilizada como apoio para entender melhor o evento `TextChanged`, revisar o uso da `ObservableCollection` e organizar a lógica do filtro. Também ajudou a comparar formas de evitar consultas desnecessárias ao banco durante a digitação.
+Durante a pesquisa e revisão foram utilizadas ferramentas de IA como apoio, incluindo **Gemini/Antigravity** e **Qwen**. Elas ajudaram na compreensão do `TextChanged`, no uso da `ObservableCollection` e na revisão da lógica do filtro.
 
 Exemplo de pergunta utilizada:
 
 > Como implementar busca instantânea com SearchBar no .NET MAUI usando ObservableCollection e LINQ?
 
-### Melhorias possíveis
+A implementação final foi conferida no código do próprio projeto.
 
-Uma melhoria futura seria aplicar um pequeno `debounce` antes de executar o filtro quando o usuário digitar muito rápido. Também podem ser adicionados filtros por preço ou categoria e uma mensagem quando nenhum produto for encontrado.
+## Relatório da atividade
 
-## Evidências do aplicativo
+O relatório textual completo está em [`docs/RELATORIO_AGENDA_04.md`](docs/RELATORIO_AGENDA_04.md). A entrega acadêmica também possui versão em PDF.
 
-As capturas reais do aplicativo Android estão na pasta `docs/screenshots/`.
+Ele responde às três questões solicitadas:
 
-| Evidência | Arquivo |
+1. Quais desafios foram encontrados ao implementar a busca dinâmica?
+2. Como a IA ajudou no processo de aprendizado e otimização do código?
+3. Quais melhorias podem ser aplicadas na funcionalidade?
+
+## Evidências reais do aplicativo
+
+As capturas reais do Android estão em `docs/screenshots/` e foram mantidas como evidências do que realmente foi executado.
+
+| Evidência | O que aparece |
 |---|---|
-| Lista inicial | `01_lista_produtos.png` |
-| Formulário de cadastro | `02_novo_produto_form.png` |
-| Cadastro preenchido | `03_cadastrar_produto.png` |
-| Edição de produto | `04_editar_produto.png` |
-| Edição com teclado | `05_editar_com_teclado.png` |
-| Confirmação de cadastro | `06_alerta_sucesso.png` |
-| Lista atualizada | `07_lista_com_4_produtos.png` |
+| `01_lista_produtos.png` | Tela principal, SearchBar, lista e total. |
+| `02_novo_produto_form.png` | Formulário de novo produto. |
+| `03_cadastrar_produto.png` | Cadastro preenchido. |
+| `04_editar_produto.png` | Tela de edição. |
+| `05_editar_com_teclado.png` | Alteração de valores. |
+| `06_alerta_sucesso.png` | Confirmação apresentada pelo aplicativo. |
+| `07_lista_com_4_produtos.png` | Lista atualizada, SearchBar e novo total. |
 
-As capturas atuais mostram a SearchBar presente no aplicativo, mas não registram um termo digitado com a lista já filtrada. Por isso, não apresento uma execução que não foi capturada. A implementação da busca dinâmica pode ser conferida diretamente em `Views/ListaProduto.xaml` e `Views/ListaProduto.xaml.cs`.
+As imagens comprovam a execução do aplicativo e a presença da `SearchBar`. Nenhuma das capturas disponíveis registra ao mesmo tempo um termo digitado e a lista já reduzida. Por isso, a filtragem dinâmica é demonstrada pelo código real em `ListaProduto.xaml` e `ListaProduto.xaml.cs`, sem simular uma execução que não foi capturada.
 
 ## Estrutura principal
 
@@ -157,6 +140,7 @@ Views/
 ├── EditarProduto.xaml
 └── EditarProduto.xaml.cs
 docs/
+├── RELATORIO_AGENDA_04.md
 └── screenshots/
 APK_Instalador/
 └── MinhasCompras_Android.apk
@@ -169,14 +153,11 @@ MauiAppMinhasCompras.sln
 
 ## Como executar
 
-### Visual Studio 2022
+1. Abra `MauiAppMinhasCompras.sln` no Visual Studio 2022 com a carga de trabalho do .NET MAUI instalada.
+2. Escolha um emulador Android ou dispositivo compatível.
+3. Execute o projeto.
 
-1. Abra `MauiAppMinhasCompras.sln`.
-2. Verifique se a carga de trabalho do .NET MAUI está instalada.
-3. Escolha um emulador Android ou um dispositivo compatível.
-4. Execute o projeto.
-
-### Linha de comando
+Também é possível compilar para Android pela linha de comando:
 
 ```bash
 dotnet build -f net9.0-android
