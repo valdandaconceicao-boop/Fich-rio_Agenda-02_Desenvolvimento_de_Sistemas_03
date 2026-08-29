@@ -67,15 +67,12 @@ private void txt_busca_TextChanged(object sender, TextChangedEventArgs e)
     string termo = (e.NewTextValue ?? string.Empty).Trim();
 
     if (string.IsNullOrWhiteSpace(termo))
-    {
         AtualizarColecao(_todosOsProdutos);
-    }
     else
     {
         var filtrados = _todosOsProdutos.Where(p =>
             !string.IsNullOrEmpty(p.Descricao) &&
             p.Descricao.Contains(termo, StringComparison.OrdinalIgnoreCase));
-
         AtualizarColecao(filtrados);
     }
 }
@@ -109,21 +106,65 @@ Ele responde às três questões solicitadas:
 2. Como a IA ajudou no processo de aprendizado e otimização do código?
 3. Quais melhorias podem ser aplicadas na funcionalidade?
 
-## Evidências reais do aplicativo
+# Evidências reais do aplicativo Android
 
-As capturas reais do Android estão em `docs/screenshots/` e foram mantidas como evidências do que realmente foi executado.
+Os prints abaixo são capturas reais do aplicativo em execução e estão armazenados em `docs/screenshots/`. Além de manter os arquivos no repositório, as imagens são exibidas diretamente neste README para facilitar a conferência pelo professor.
 
-| Evidência | O que aparece |
+### 1. Tela principal - lista de produtos e SearchBar
+
+![Tela principal com lista de produtos e SearchBar](docs/screenshots/01_lista_produtos.png)
+
+Mostra a tela principal do aplicativo, a `SearchBar`, os produtos cadastrados e o total das compras.
+
+### 2. Formulário de novo produto
+
+![Formulário de novo produto](docs/screenshots/02_novo_produto_form.png)
+
+Mostra a tela utilizada para cadastrar um novo produto.
+
+### 3. Cadastro preenchido
+
+![Cadastro de produto preenchido](docs/screenshots/03_cadastrar_produto.png)
+
+Mostra os dados preenchidos antes da gravação do produto.
+
+### 4. Tela de edição
+
+![Tela de edição do produto](docs/screenshots/04_editar_produto.png)
+
+Mostra um produto existente aberto para edição.
+
+### 5. Edição com teclado
+
+![Edição do produto com teclado](docs/screenshots/05_editar_com_teclado.png)
+
+Mostra a alteração de dados do produto durante a utilização do aplicativo.
+
+### 6. Confirmação apresentada pelo aplicativo
+
+![Alerta de confirmação](docs/screenshots/06_alerta_sucesso.png)
+
+Mostra o retorno visual apresentado após a operação realizada no aplicativo.
+
+### 7. Lista atualizada
+
+![Lista atualizada com quatro produtos](docs/screenshots/07_lista_com_4_produtos.png)
+
+Mostra a lista depois do cadastro de um novo produto, com a `SearchBar` visível e o total atualizado.
+
+## Relação das evidências com a Agenda 04
+
+| Evidência | O que comprova |
 |---|---|
-| `01_lista_produtos.png` | Tela principal, SearchBar, lista e total. |
-| `02_novo_produto_form.png` | Formulário de novo produto. |
-| `03_cadastrar_produto.png` | Cadastro preenchido. |
-| `04_editar_produto.png` | Tela de edição. |
-| `05_editar_com_teclado.png` | Alteração de valores. |
-| `06_alerta_sucesso.png` | Confirmação apresentada pelo aplicativo. |
-| `07_lista_com_4_produtos.png` | Lista atualizada, SearchBar e novo total. |
+| `01_lista_produtos.png` | Aplicativo executando, lista de produtos, SearchBar e total. |
+| `02_novo_produto_form.png` | Tela de cadastro integrada ao projeto. |
+| `03_cadastrar_produto.png` | Entrada de dados de produto. |
+| `04_editar_produto.png` | Edição de produto existente. |
+| `05_editar_com_teclado.png` | Interação real com os campos do aplicativo. |
+| `06_alerta_sucesso.png` | Feedback visual do aplicativo após operação. |
+| `07_lista_com_4_produtos.png` | Atualização da lista, SearchBar e total após cadastro. |
 
-As imagens comprovam a execução do aplicativo e a presença da `SearchBar`. Nenhuma das capturas disponíveis registra ao mesmo tempo um termo digitado e a lista já reduzida. Por isso, a filtragem dinâmica é demonstrada pelo código real em `ListaProduto.xaml` e `ListaProduto.xaml.cs`, sem simular uma execução que não foi capturada.
+As capturas comprovam a execução real do aplicativo e mostram a `SearchBar` implementada na interface. As capturas disponíveis não registram simultaneamente um termo digitado e a lista já filtrada. A lógica da busca dinâmica pode ser conferida diretamente nos arquivos `Views/ListaProduto.xaml` e `Views/ListaProduto.xaml.cs`, onde estão `TextChanged`, `NewTextValue`, `ObservableCollection` e o filtro com LINQ.
 
 ## Estrutura principal
 
@@ -142,13 +183,13 @@ Views/
 docs/
 ├── RELATORIO_AGENDA_04.md
 └── screenshots/
-APK_Instalador/
-└── MinhasCompras_Android.apk
-App.xaml
-App.xaml.cs
-MauiProgram.cs
-MauiAppMinhasCompras.csproj
-MauiAppMinhasCompras.sln
+    ├── 01_lista_produtos.png
+    ├── 02_novo_produto_form.png
+    ├── 03_cadastrar_produto.png
+    ├── 04_editar_produto.png
+    ├── 05_editar_com_teclado.png
+    ├── 06_alerta_sucesso.png
+    └── 07_lista_com_4_produtos.png
 ```
 
 ## Como executar
