@@ -1,6 +1,25 @@
-﻿# 📱 MauiAppMinhasCompras - Agenda 04 (.NET MAUI + SQLite)
+﻿# 📱 MauiAppMinhasCompras - Fichário Agenda 04 (.NET MAUI + SQLite)
 
-Aplicativo multiplataforma desenvolvido em **.NET MAUI 9** com persistência local de dados em banco de dados **SQLite** assíncrono e coleções reativas **`ObservableCollection<Produto>`**. O aplicativo gerencia uma lista de compras com controle de quantidade, preço unitário, cálculo automático de subtotais e somatória geral acumulada, além de operações CRUD completas e mecanismo de busca instantânea via **`SearchBar`** (evento `TextChanged`).
+> **Centro Estadual de Educação Tecnológica Paula Souza (CEETEPS / ETEC)**  
+> **Curso:** Técnico em Desenvolvimento de Sistemas | **Componente:** Programação Mobile II (DS III)  
+> **Aluno:** Valdan Conceição França  
+> **Prazo Oficial de Entrega:** 31/08/2026 às 12:00  
+> **Documento Oficial em PDF:** [`Fichario_Agenda04_DS3_ValdanConceicao.pdf`](Fichario_Agenda04_DS3_ValdanConceicao.pdf)
+
+---
+
+## 🧭 Readmap de Avaliação Pedagógica para o Professor / Tutor
+
+Este readmap foi estruturado para facilitar a localização imediata de todos os itens exigidos no enunciado oficial da **Agenda 04**:
+
+| Requisito do Enunciado | Onde Identificar no Repositório | Onde Identificar no PDF | Status |
+| :--- | :--- | :--- | :---: |
+| **Parte 1: Pesquisa com IA (.NET MAUI, Busca, TextChanged, ObservableCollection)** | [`Views/ListaProduto.xaml.cs`](Views/ListaProduto.xaml.cs) e [`Views/ListaProduto.xaml`](Views/ListaProduto.xaml) | **Páginas 1 e 2 (Seção 2)** — Resolução detalhada das 5 questões conceituais. | ✅ **CONFORME** |
+| **Parte 2: Relatório Reflexivo (Desafios, Uso de IA e Melhorias)** | Documentado neste README e no Code-Behind | **Página 2 (Seção 3)** — 3 respostas literais com citação de IA e prompt. | ✅ **CONFORME** |
+| **Uso de `ObservableCollection<Produto>`** | [`Views/ListaProduto.xaml.cs` (Linhas 21 e 34)](Views/ListaProduto.xaml.cs#L21-L34) | **Páginas 3 e 5** — Código vetorial e print Full HD 1080p do IDE. | ✅ **CONFORME** |
+| **Busca Dinâmica com `SearchBar` (Evento `TextChanged`)** | [`Views/ListaProduto.xaml` (Linha 13)](Views/ListaProduto.xaml) e [`ListaProduto.xaml.cs`](Views/ListaProduto.xaml.cs) | **Páginas 4 e 6** — XAML declarativo e print filtrando "arroz". | ✅ **CONFORME** |
+| **Persistência Assíncrona SQLite (CRUD)** | [`Helpers/SQLiteDatabaseHelper.cs`](Helpers/SQLiteDatabaseHelper.cs) e [`Models/Produto.cs`](Models/Produto.cs) | **Páginas 3, 4 e 5** — Métodos `Insert`, `Update`, `Delete`, `GetAll`, `Search`. | ✅ **CONFORME** |
+| **Competências 1 e Habilidades 1.1 a 1.5** | Projeto multiplataforma .NET MAUI 9 completo com banco e layout moderno | **Página 1 (Seção 1)** — Tabela de matriz de competências do CEETEPS. | ✅ **CONFORME** |
 
 ---
 
@@ -25,34 +44,24 @@ Abaixo estão as capturas de tela reais do aplicativo em execução em dispositi
 
 ---
 
-## 🎓 Principais Aprendizados e Conceitos Aplicados
+## 🎓 Relatório Técnico Reflexivo (Parte 2 do Enunciado)
 
-Durante o desenvolvimento deste projeto da **Agenda 04**, foram consolidados os seguintes conceitos de engenharia de software mobile:
+### 💡 1. Desafios Encontrados na Busca Dinâmica
+O principal desafio foi gerenciar a **concorrência e a fluidez visual (60 FPS)** durante a digitação acelerada do usuário. Realizar consultas repetidas ao banco de dados SQLite via `SELECT LIKE` a cada milissegundo de digitação causava concorrência de I/O e risco de *race conditions* (quando o retorno de uma busca anterior sobrescreve uma mais recente). A solução foi desacoplar o banco da busca: os dados são carregados uma única vez no `OnAppearing()` para a memória RAM, e a busca filtra diretamente a `ObservableCollection<Produto>` via LINQ em tempo constante.
 
-### 1. Manipulação Reativa de Interface com `ObservableCollection<T>`
-- Vinculação da interface com a classe `ObservableCollection<Produto>`, herdada de `Collection<T>` e implementando a interface `INotifyCollectionChanged`.
-- Notificação e re-renderização automática dos elementos da UI a cada adição (`Add`), remoção (`Remove`) ou limpeza (`Clear`), sem necessidade de reatribuir manualmente o `ItemsSource`.
+### 🤖 2. Contribuição da IA e Declaração Ética de Transparência (Diretrizes CEETEPS)
+Em total conformidade com as diretrizes do CEETEPS sobre integridade acadêmica, declara-se o uso de ferramentas de Inteligência Artificial Generativa (**Google Gemini / Antigravity** e **Qwen**) como assistentes de programação em par (*pair programming*).
+- **Como a IA ajudou:** Auxiliou na estruturação da `ObservableCollection<Produto>` vinculada ao `ItemsSource`, na validação de queries parametrizadas com placeholders `?` contra SQL Injection e na formulação da lógica de recálculo dinâmico do somatório financeiro no evento `TextChanged`.
+- **Prompt de Exemplo:** *"Como implementar a busca instantânea com SearchBar no .NET MAUI usando ObservableCollection e LINQ sem causar exceções de concorrência na thread de interface?"*
 
-### 2. Busca Instantânea em Tempo Real (`SearchBar` + `TextChanged`)
-- Captura contínua de caracteres através do evento `TextChanged` da `SearchBar`.
-- Filtragem instantânea da coleção em memória RAM utilizando LINQ (`Contains` com `StringComparison.OrdinalIgnoreCase`), mantendo taxa estável de 60 FPS e eliminando concorrência de I/O no banco SQLite.
-- Recálculo dinâmico da somatória geral (`Total das Compras`) em tempo real no rodapé.
-
-### 3. Banco de Dados Local com SQLite e ORM (`sqlite-net-pcl`)
-- Mapeamento Objeto-Relacional (**ORM**), convertendo a classe `Produto` em uma tabela de banco relacional local usando as diretivas `[PrimaryKey, AutoIncrement]`.
-- Armazenamento em diretório seguro e isolado da aplicação através de `Environment.SpecialFolder.LocalApplicationData`.
-
-### 4. Padrão Singleton Global (`App.Db`)
-- Gerenciamento de uma única instância estática da conexão com o banco SQLite em `App.Db`, prevenindo concorrência e vazamento de memória.
-
-### 5. Boas Práticas de Segurança e Validação de Dados
-- **Prevenção contra SQL Injection:** Uso de queries parametrizadas com placeholders (`?`) em instruções `UPDATE` e `SELECT LIKE`.
-- **Tratamento de Tipos:** Validação de entradas numéricas com `double.TryParse` aceitando vírgula ou ponto decimal.
-- **Diálogos de Confirmação:** Uso de `DisplayAlert` modal para confirmar operações críticas.
+### 🚀 3. Melhorias Aplicáveis à Funcionalidade
+1. **Padrão Debounce:** Adicionar atraso de 300ms antes de disparar o filtro para poupar ciclos de processamento enquanto o usuário digita continuamente.
+2. **Filtros Multicritério:** Adicionar filtros simultâneos combinando busca por descrição com faixas de preço e categorias.
+3. **Busca por Reconhecimento de Voz:** Integrar reconhecimento nativo de voz do Android diretamente no controle `SearchBar`.
 
 ---
 
-## 🛠️ Estrutura do Código
+## 🛠️ Estrutura do Projeto
 
 ```
 📁 Fichário_Agenda 02_Desenvolvimento_de_Sistemas_03
