@@ -1,36 +1,24 @@
 # MauiAppMinhasCompras - Agenda 04 (Desenvolvimento de Sistemas III)
 
-Aplicativo desenvolvido em **.NET MAUI 9** com banco local **SQLite**. Nesta Agenda 04, o foco é a implementação de **busca dinâmica de produtos** usando `SearchBar`, evento `TextChanged` e `ObservableCollection<Produto>`.
+Aplicativo desenvolvido em **.NET MAUI 9** com banco local **SQLite**. O foco desta atividade é a implementação de **busca dinâmica de produtos** utilizando `SearchBar`, evento `TextChanged` e `ObservableCollection<Produto>`.
 
-## Requisitos da Agenda 04 atendidos
+## Requisitos atendidos
 
-- [x] Pesquisa sobre .NET MAUI e mecanismos de busca.
-- [x] `SearchBar` na interface.
-- [x] Evento `TextChanged`.
-- [x] Uso de `TextChangedEventArgs` e `NewTextValue`.
-- [x] `ObservableCollection<Produto>` como coleção ligada à interface.
-- [x] Busca dinâmica de produtos pela descrição.
-- [x] Atualização da lista durante a digitação.
-- [x] Persistência em SQLite.
-- [x] Relatório com desafios encontrados.
-- [x] Explicação de como a IA ajudou no aprendizado e revisão.
-- [x] Melhorias possíveis para a funcionalidade.
-- [x] Código disponível no repositório e relatório preparado em PDF para entrega.
+- [x] Pesquisa sobre .NET MAUI e mecanismos de busca
+- [x] `SearchBar` na interface
+- [x] Evento `TextChanged`
+- [x] Uso de `TextChangedEventArgs` e `NewTextValue`
+- [x] Uso de `ObservableCollection<Produto>`
+- [x] Busca dinâmica pela descrição do produto
+- [x] Atualização da lista durante a pesquisa
+- [x] Persistência dos produtos em SQLite
+- [x] Relatório com os desafios encontrados
+- [x] Explicação sobre o uso de IA como apoio
+- [x] Melhorias possíveis para a funcionalidade
 
-## Como a busca funciona
+## Implementação da busca
 
-1. Os produtos são carregados do SQLite quando a tela aparece.
-2. `_todosOsProdutos` mantém os produtos em memória.
-3. `ObservableCollection<Produto>` é ligada à `CollectionView` por `ItemsSource`.
-4. A `SearchBar` chama `txt_busca_TextChanged` sempre que o texto muda.
-5. `e.NewTextValue` recebe o texto digitado.
-6. LINQ filtra os produtos pela descrição.
-7. `AtualizarColecao` atualiza os itens exibidos.
-8. Quando a pesquisa fica vazia, todos os produtos voltam a aparecer.
-
-## SearchBar
-
-Arquivo: `Views/ListaProduto.xaml`
+A `SearchBar` está definida em `Views/ListaProduto.xaml`:
 
 ```xml
 <SearchBar
@@ -40,24 +28,20 @@ Arquivo: `Views/ListaProduto.xaml`
     SearchButtonPressed="txt_busca_SearchButtonPressed" />
 ```
 
-A lista de produtos é apresentada em uma `CollectionView`.
-
-## ObservableCollection e filtro em tempo real
-
-Arquivo: `Views/ListaProduto.xaml.cs`
+A lista apresentada na tela utiliza uma `ObservableCollection<Produto>`:
 
 ```csharp
 private ObservableCollection<Produto> lista_produtos_colecao = new();
 private List<Produto> _todosOsProdutos = new();
 ```
 
-A coleção é ligada à interface:
+A coleção é ligada à interface pelo `ItemsSource`:
 
 ```csharp
 lista_produtos.ItemsSource = lista_produtos_colecao;
 ```
 
-O filtro é executado quando o texto da SearchBar muda:
+Quando o texto da busca muda, o evento utiliza `e.NewTextValue` e LINQ para filtrar os produtos pela descrição:
 
 ```csharp
 private void txt_busca_TextChanged(object sender, TextChangedEventArgs e)
@@ -73,106 +57,89 @@ private void txt_busca_TextChanged(object sender, TextChangedEventArgs e)
         var filtrados = _todosOsProdutos.Where(p =>
             !string.IsNullOrEmpty(p.Descricao) &&
             p.Descricao.Contains(termo, StringComparison.OrdinalIgnoreCase));
+
         AtualizarColecao(filtrados);
     }
 }
 ```
 
-A busca usada pelo `TextChanged` acontece em memória depois que os produtos são carregados do SQLite. O helper também possui um método `Search` com SQL `LIKE`, disponível como método auxiliar.
+Os produtos são carregados do SQLite quando a tela aparece e ficam disponíveis em memória. Dessa forma, a busca pode atualizar a lista sem consultar novamente o banco a cada caractere digitado.
 
-## Banco SQLite
+## Banco de dados
 
-Arquivo: `Helpers/SQLiteDatabaseHelper.cs`
+O arquivo `Helpers/SQLiteDatabaseHelper.cs` mantém as operações de cadastro, listagem, atualização e exclusão dos produtos. O projeto também possui um método auxiliar de pesquisa utilizando SQL `LIKE`.
 
-O projeto mantém as operações de cadastro, leitura, atualização e exclusão, além do método auxiliar de pesquisa. As consultas SQL escritas manualmente utilizam parâmetros `?`.
+## Pesquisa e apoio de IA
 
-## Pesquisa e uso de IA
+Durante a pesquisa e revisão da atividade foram utilizadas **Gemini/Antigravity** e **Qwen** como ferramentas de apoio. Elas ajudaram principalmente na compreensão do evento `TextChanged`, no uso da `ObservableCollection` e na revisão da lógica de filtragem.
 
-Durante a pesquisa e revisão foram utilizadas ferramentas de IA como apoio, incluindo **Gemini/Antigravity** e **Qwen**. Elas ajudaram na compreensão do `TextChanged`, no uso da `ObservableCollection` e na revisão da lógica do filtro.
-
-Exemplo de pergunta utilizada:
+Exemplo de pergunta utilizada durante a pesquisa:
 
 > Como implementar busca instantânea com SearchBar no .NET MAUI usando ObservableCollection e LINQ?
 
-A implementação final foi conferida no código do próprio projeto.
+## Relatório da Agenda 04
 
-## Relatório da atividade
+O relatório textual está disponível em [`docs/RELATORIO_AGENDA_04.md`](docs/RELATORIO_AGENDA_04.md).
 
-O relatório textual completo está em [`docs/RELATORIO_AGENDA_04.md`](docs/RELATORIO_AGENDA_04.md). A entrega acadêmica também possui versão em PDF.
-
-Ele responde às três questões solicitadas:
+O relatório responde às três questões solicitadas na atividade:
 
 1. Quais desafios foram encontrados ao implementar a busca dinâmica?
 2. Como a IA ajudou no processo de aprendizado e otimização do código?
 3. Quais melhorias podem ser aplicadas na funcionalidade?
 
-# Evidências reais do aplicativo Android
+## Evidências do aplicativo Android
 
-Os prints abaixo são capturas reais do aplicativo em execução e estão armazenados em `docs/screenshots/`. Além de manter os arquivos no repositório, as imagens são exibidas diretamente neste README para facilitar a conferência pelo professor.
-
-### 1. Tela principal - lista de produtos e SearchBar
+### Tela principal
 
 ![Tela principal com lista de produtos e SearchBar](docs/screenshots/01_lista_produtos.png)
 
-Mostra a tela principal do aplicativo, a `SearchBar`, os produtos cadastrados e o total das compras.
+Tela principal com a lista de produtos, campo de busca e total das compras.
 
-### 2. Formulário de novo produto
+### Novo produto
 
 ![Formulário de novo produto](docs/screenshots/02_novo_produto_form.png)
 
-Mostra a tela utilizada para cadastrar um novo produto.
+Tela utilizada para cadastrar um produto.
 
-### 3. Cadastro preenchido
+### Cadastro preenchido
 
 ![Cadastro de produto preenchido](docs/screenshots/03_cadastrar_produto.png)
 
-Mostra os dados preenchidos antes da gravação do produto.
+Campos preenchidos para inclusão do produto.
 
-### 4. Tela de edição
+### Edição de produto
 
 ![Tela de edição do produto](docs/screenshots/04_editar_produto.png)
 
-Mostra um produto existente aberto para edição.
+Tela utilizada para alterar um produto cadastrado.
 
-### 5. Edição com teclado
+### Edição dos valores
 
 ![Edição do produto com teclado](docs/screenshots/05_editar_com_teclado.png)
 
-Mostra a alteração de dados do produto durante a utilização do aplicativo.
+Alteração dos dados durante a utilização do aplicativo.
 
-### 6. Confirmação apresentada pelo aplicativo
+### Confirmação
 
 ![Alerta de confirmação](docs/screenshots/06_alerta_sucesso.png)
 
-Mostra o retorno visual apresentado após a operação realizada no aplicativo.
+Mensagem apresentada pelo aplicativo após a operação.
 
-### 7. Lista atualizada
+### Lista atualizada
 
 ![Lista atualizada com quatro produtos](docs/screenshots/07_lista_com_4_produtos.png)
 
-Mostra a lista depois do cadastro de um novo produto, com a `SearchBar` visível e o total atualizado.
-
-## Relação das evidências com a Agenda 04
-
-| Evidência | O que comprova |
-|---|---|
-| `01_lista_produtos.png` | Aplicativo executando, lista de produtos, SearchBar e total. |
-| `02_novo_produto_form.png` | Tela de cadastro integrada ao projeto. |
-| `03_cadastrar_produto.png` | Entrada de dados de produto. |
-| `04_editar_produto.png` | Edição de produto existente. |
-| `05_editar_com_teclado.png` | Interação real com os campos do aplicativo. |
-| `06_alerta_sucesso.png` | Feedback visual do aplicativo após operação. |
-| `07_lista_com_4_produtos.png` | Atualização da lista, SearchBar e total após cadastro. |
-
-As capturas comprovam a execução real do aplicativo e mostram a `SearchBar` implementada na interface. As capturas disponíveis não registram simultaneamente um termo digitado e a lista já filtrada. A lógica da busca dinâmica pode ser conferida diretamente nos arquivos `Views/ListaProduto.xaml` e `Views/ListaProduto.xaml.cs`, onde estão `TextChanged`, `NewTextValue`, `ObservableCollection` e o filtro com LINQ.
+Lista atualizada após o cadastro, mantendo a SearchBar disponível na tela.
 
 ## Estrutura principal
 
 ```text
 Models/
 └── Produto.cs
+
 Helpers/
 └── SQLiteDatabaseHelper.cs
+
 Views/
 ├── ListaProduto.xaml
 ├── ListaProduto.xaml.cs
@@ -180,6 +147,7 @@ Views/
 ├── NovoProduto.xaml.cs
 ├── EditarProduto.xaml
 └── EditarProduto.xaml.cs
+
 docs/
 ├── RELATORIO_AGENDA_04.md
 └── screenshots/
@@ -206,4 +174,4 @@ dotnet build -f net9.0-android
 
 ## Entrega
 
-O repositório contém o código implementado durante a atividade. O relatório da Agenda 04 é entregue em formato PDF, conforme solicitado pelo professor.
+O repositório contém o código da implementação realizada na Agenda 04 e as evidências do aplicativo. O relatório da atividade é entregue em formato PDF, conforme solicitado.
