@@ -34,11 +34,16 @@ Este readmap foi estruturado para facilitar a localização imediata de todos os
 
 #### 🎬 Demonstração dos Recursos Novos e Design AAA (Agenda 05)
 
-> **Prints e vídeo serão adicionados em breve** — demonstrando o fluxo completo: deslizar para a direita (editar), deslizar para a esquerda (excluir), confirmação por alerta e design slim no celular.
+Abaixo estão as capturas de tela reais do aplicativo em execução no dispositivo móvel Android (em modo escuro), comprovando o funcionamento prático dos 3 novos recursos e o padrão de design AAA slim com cantos arredondados:
 
-| Deslizar p/ Direita (Editar Verde) | Deslizar p/ Esquerda (Excluir Vermelho) | Janelinha "Tem certeza?" (DisplayAlert) |
+| 1. Deslizar para Esquerda (Botão Excluir Squircle) | 2. Janela de Confirmação (DisplayAlert Nativo) | 3. Sucesso e Total Recalculado (SQLite) |
 | :---: | :---: | :---: |
-| _print pendente_ | _print pendente_ | _print pendente_ |
+| ![Swipe Excluir Arredondado](docs/screenshots/09_swipe_excluir_arredondado.png) | ![Confirmação DisplayAlert](docs/screenshots/10_confirmacao_displayalert.png) | ![Sucesso Exclusão](docs/screenshots/11_sucesso_exclusao_total_recalculado.png) |
+
+> **Destaques Visuais Comprovados pelas Evidências:**
+> 1. **Botão Excluir Squircle:** Fundo vermelho com cantos arredondados (`RoundRectangle 16`) perfeitamente alinhado com o design dos cartões de produtos.
+> 2. **Disparo Automático e DisplayAlert:** A janelinha de confirmação surge com os botões *"Cancelar"* e *"Sim, excluir"*, protegida com tratamento de erros em `try-catch`.
+> 3. **Recálculo em Tempo Real:** Ao confirmar a exclusão da *"Coca Cola 2L"*, o item é removido do SQLite e da tela instantaneamente, e o **Total Acumulado** no rodapé flutuante é recalculado automaticamente de **R$ 351,60** para **R$ 256,20**.
 
 ---
 
