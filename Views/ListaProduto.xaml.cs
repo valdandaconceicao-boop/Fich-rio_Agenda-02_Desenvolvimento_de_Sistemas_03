@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -124,6 +124,54 @@ namespace MauiAppMinhasCompras.Views
             if (e.Parameter is Produto produtoSelecionado)
             {
                 await Navigation.PushAsync(new EditarProduto(produtoSelecionado));
+            }
+        }
+
+        // RECURSO NOVO 2: Exclusão por deslize com confirmação via DisplayAlert
+        // Combina os 3 recursos: try-catch + menu de contexto (SwipeView) + DisplayAlert
+        private async void SwipeItem_Excluir_Invoked(object sender, EventArgs e)
+        {
+            try
+            {
+                // Obtém o produto vinculado ao SwipeItem que foi deslizado
+                Produto? produto = null;
+                if (sender is SwipeItem swipeItem && swipeItem.CommandParameter is Produto p)
+                {
+                    produto = p;
+                }
+
+                if (produto == null)
+                {
+                    await DisplayAlert("Erro", "Nenhum produto identificado para exclusão.", "OK");
+                    return;
+                }
+
+                // RECURSO NOVO 3: DisplayAlert de confirmação ("Tem certeza?")
+                bool confirmar = await DisplayAlert(
+                    "Confirmação de Exclusão",
+                    $"Tem certeza que deseja excluir '{produto.Descricao}'?",
+                    "Sim, excluir",
+                    "Cancelar");
+
+                if (!confirmar) return;
+
+                // Exclui do banco SQLite
+                await App.Db.Delete(produto.Id);
+
+                // Remove da lista em memória e da ObservableCollection visível
+                _todosOsProdutos.Remove(produto);
+                lista_produtos_colecao.Remove(produto);
+
+                // Recalcula o total na barra inferior
+                double total = lista_produtos_colecao.Sum(p2 => p2.Total);
+                lbl_total_geral.Text = $"R$ {total:F2}";
+
+                await DisplayAlert("Sucesso!", "Produto excluído com sucesso!", "OK");
+            }
+            catch (Exception ex)
+            {
+                // try-catch: se der qualquer erro, o app NÃO trava
+                await DisplayAlert("Erro", $"Erro ao excluir: {ex.Message}", "OK");
             }
         }
     }

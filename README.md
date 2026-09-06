@@ -1,4 +1,4 @@
-﻿# 📱 MauiAppMinhasCompras - Fichário Agenda 04 (.NET MAUI + SQLite)
+# 📱 MauiAppMinhasCompras - Fichário Agenda 04 (.NET MAUI + SQLite)
 
 > **Centro Estadual de Educação Tecnológica Paula Souza (CEETEPS / ETEC)**  
 > **Curso:** Técnico em Desenvolvimento de Sistemas | **Componente:** Programação Mobile II (DS III)  
@@ -10,7 +10,9 @@
 
 ## 🧭 Readmap de Avaliação Pedagógica para o Professor / Tutor
 
-Este readmap foi estruturado para facilitar a localização imediata de todos os itens exigidos no enunciado oficial da **Agenda 04**:
+Este readmap foi estruturado para facilitar a localização imediata de todos os itens exigidos nos enunciados oficiais:
+
+### 📋 Agenda 04 — Pesquisa com IA e Relatório Reflexivo
 
 | Requisito do Enunciado | Onde Identificar no Repositório | Onde Identificar no PDF | Status |
 | :--- | :--- | :--- | :---: |
@@ -20,6 +22,22 @@ Este readmap foi estruturado para facilitar a localização imediata de todos os
 | **Busca Dinâmica com `SearchBar` (Evento `TextChanged`)** | [`Views/ListaProduto.xaml` (Linha 13)](Views/ListaProduto.xaml) e [`ListaProduto.xaml.cs`](Views/ListaProduto.xaml.cs) | **Páginas 4 e 6** — XAML declarativo e print filtrando "arroz". | ✅ **CONFORME** |
 | **Persistência Assíncrona SQLite (CRUD)** | [`Helpers/SQLiteDatabaseHelper.cs`](Helpers/SQLiteDatabaseHelper.cs) e [`Models/Produto.cs`](Models/Produto.cs) | **Páginas 3, 4 e 5** — Métodos `Insert`, `Update`, `Delete`, `GetAll`, `Search`. | ✅ **CONFORME** |
 | **Competências 1 e Habilidades 1.1 a 1.5** | Projeto multiplataforma .NET MAUI 9 completo com banco e layout moderno | **Página 1 (Seção 1)** — Tabela de matriz de competências do CEETEPS. | ✅ **CONFORME** |
+
+### 🆕 Agenda 05 — 3 Recursos Novos Adicionados ao App de Compras
+
+| # | Recurso Exigido | Onde Identificar no Código | Como Funciona | Status |
+| :---: | :--- | :--- | :--- | :---: |
+| 1️⃣ | **Try-catch** *(código que não trava quando dá erro)* | [`Views/ListaProduto.xaml.cs` — método `SwipeItem_Excluir_Invoked` (Linhas 133–178)](Views/ListaProduto.xaml.cs#L133-L178) | Todo o fluxo de exclusão está envolvido em `try { } catch (Exception ex) { }`. Se ocorrer qualquer erro (banco corrompido, permissão negada, etc.), o app **não trava** — exibe um alerta amigável com a mensagem do erro. | ✅ **IMPLEMENTADO** |
+| 2️⃣ | **Menu de contexto por deslize** *(SwipeView — deslizar o dedo no item pra aparecer o botão Excluir)* | [`Views/ListaProduto.xaml` — `<SwipeView>` (Linhas 43–94)](Views/ListaProduto.xaml#L43-L94) | Cada item da lista (`CollectionView`) está envolvido em um `<SwipeView>`. Ao deslizar o item para a **esquerda**, aparece um botão vermelho **"Excluir"** (`<SwipeItem>`) por trás do card. | ✅ **IMPLEMENTADO** |
+| 3️⃣ | **DisplayAlert de confirmação** *(janelinha perguntando "Tem certeza?" antes de apagar)* | [`Views/ListaProduto.xaml.cs` — `DisplayAlert` (Linhas 152–157)](Views/ListaProduto.xaml.cs#L152-L157) | Após deslizar e tocar em "Excluir", aparece uma **janelinha popup** perguntando: _"Tem certeza que deseja excluir '[nome do produto]'?"_ com dois botões: **"Sim, excluir"** e **"Cancelar"**. Só apaga se o usuário confirmar. | ✅ **IMPLEMENTADO** |
+
+#### 🎬 Demonstração dos 3 Recursos Novos (Agenda 05)
+
+> **Prints e vídeo serão adicionados em breve** — mostrando o fluxo completo de deslizar → confirmar → excluir no celular Android.
+
+| Deslizar para a Esquerda (SwipeView) | Janelinha "Tem certeza?" (DisplayAlert) | Item Excluído com Sucesso |
+| :---: | :---: | :---: |
+| _print pendente_ | _print pendente_ | _print pendente_ |
 
 ---
 

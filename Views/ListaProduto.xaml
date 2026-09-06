@@ -38,49 +38,60 @@
             
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Produto">
-                    <Frame Margin="0,5"
-                           Padding="14"
-                           CornerRadius="10"
-                           HasShadow="True"
-                           BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
-                           BorderColor="{AppThemeBinding Light=#E2E8F0, Dark=#2D3748}">
+                    <!-- RECURSO NOVO 1: Menu de Contexto por Deslize (SwipeView)
+                         Ao deslizar o item para a ESQUERDA, aparece o botão vermelho "Excluir" -->
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Excluir"
+                                           BackgroundColor="#E74C3C"
+                                           IconImageSource="delete.png"
+                                           Invoked="SwipeItem_Excluir_Invoked"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
 
-                        <!-- Toque no card abre a edição.
-                             Usamos TapGestureRecognizer em vez da seleção do CollectionView
-                             porque a seleção é instável no Android quando a lista é rebindada
-                             (erro: toque no item não dispara SelectionChanged) -->
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="Frame_Tapped" CommandParameter="{Binding .}" />
-                        </Frame.GestureRecognizers>
+                        <Frame Margin="0,5"
+                               Padding="14"
+                               CornerRadius="10"
+                               HasShadow="True"
+                               BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                               BorderColor="{AppThemeBinding Light=#E2E8F0, Dark=#2D3748}">
+
+                            <!-- Toque no card abre a edição -->
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Frame_Tapped" CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
                         
-                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
                             
-                            <!-- Nome / Descrição do Produto -->
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="{Binding Descricao}"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="{AppThemeBinding Light=#2C3E50, Dark=#ECF0F1}" />
+                                <!-- Nome / Descrição do Produto -->
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding Descricao}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#2C3E50, Dark=#ECF0F1}" />
 
-                            <!-- Preço Total deste Item (Qtd x Preço) -->
-                            <Label Grid.Row="0" Grid.Column="1"
-                                   Text="{Binding Total, StringFormat='R$ {0:F2}'}"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="#27AE60"
-                                   HorizontalOptions="End" />
+                                <!-- Preço Total deste Item (Qtd x Preço) -->
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding Total, StringFormat='R$ {0:F2}'}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#27AE60"
+                                       HorizontalOptions="End" />
 
-                            <!-- Quantidade e Preço Unitário -->
-                            <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6" Margin="0,4,0,0">
-                                <Label Text="Qtd:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
-                                <Label Text="{Binding Quantidade}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
-                                <Label Text="|" TextColor="LightGray" FontSize="13" />
-                                <Label Text="Unit:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
-                                <Label Text="{Binding Preco, StringFormat='R$ {0:F2}'}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
-                            </HorizontalStackLayout>
+                                <!-- Quantidade e Preço Unitário -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6" Margin="0,4,0,0">
+                                    <Label Text="Qtd:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
+                                    <Label Text="{Binding Quantidade}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
+                                    <Label Text="|" TextColor="LightGray" FontSize="13" />
+                                    <Label Text="Unit:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
+                                    <Label Text="{Binding Preco, StringFormat='R$ {0:F2}'}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
+                                </HorizontalStackLayout>
                             
-                        </Grid>
-                    </Frame>
+                            </Grid>
+                        </Frame>
+                    </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
