@@ -1,122 +1,215 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Tela Principal: Listagem dinâmica dos produtos -->
+<!-- Tela Principal: Listagem dinâmica dos produtos (Design AAA Slim & Elegante) -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:model="clr-namespace:MauiAppMinhasCompras.Models"
              x:Class="MauiAppMinhasCompras.Views.ListaProduto"
              Title="Minhas Compras"
-             BackgroundColor="{AppThemeBinding Light=#F4F6F9, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F0F12}">
 
     <!-- Botões da barra superior (Toolbar) -->
     <ContentPage.ToolbarItems>
-        <!-- Botão para abrir o formulário de cadastro -->
         <ToolbarItem Text="＋ Novo" Clicked="ToolbarItem_Clicked_Novo" />
-        <!-- Botão para exibir o somatório geral em um alerta -->
         <ToolbarItem Text="Somar" Clicked="ToolbarItem_Clicked_Somar" />
     </ContentPage.ToolbarItems>
 
-    <!-- Grid para organizar a busca no topo, a lista no centro e o total embaixo -->
+    <!-- Grid principal: Topo (Busca), Centro (Lista Dinâmica), Rodapé (Barra Flutuante de Total) -->
     <Grid RowDefinitions="Auto, *, Auto">
         
-        <!-- 1. Barra de Busca com filtro em tempo real -->
-        <SearchBar Grid.Row="0"
-                   x:Name="txt_busca"
-                   Placeholder="Buscar produto pela descrição..."
-                   TextChanged="txt_busca_TextChanged"
-                   SearchButtonPressed="txt_busca_SearchButtonPressed"
-                   Margin="10,8,10,4"
-                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}" />
+        <!-- 1. Barra de Busca Slim & Elegante (Squircle Padronizado) -->
+        <Border Grid.Row="0"
+                Margin="14,10,14,6"
+                StrokeShape="RoundRectangle 14"
+                Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#27272A}"
+                StrokeThickness="1"
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#18181B}">
+            <SearchBar x:Name="txt_busca"
+                       Placeholder="Buscar produto pela descrição..."
+                       PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#71717A}"
+                       TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
+                       BackgroundColor="Transparent"
+                       CancelButtonColor="{AppThemeBinding Light=#64748B, Dark=#A1A1AA}"
+                       TextChanged="txt_busca_TextChanged"
+                       SearchButtonPressed="txt_busca_SearchButtonPressed"
+                       Margin="2,0" />
+        </Border>
 
-        <!-- 2. Lista dinâmica que exibe os produtos carregados do SQLite -->
-        <!-- CollectionView é o controle moderno do MAUI: substitui o ListView legado
-             e não sofre o bug de crash do adaptador Android ao rebindar a lista
-             durante a digitação na busca (erro IllegalStateException) -->
+        <!-- 2. Lista de produtos com CollectionView e SwipeView Multidirecional -->
         <CollectionView Grid.Row="1"
                         x:Name="lista_produtos"
                         SelectionMode="None"
-                        Margin="10,0">
+                        Margin="0,2">
             
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Produto">
-                    <!-- RECURSO NOVO 1: Menu de Contexto por Deslize (SwipeView)
-                         Ao deslizar o item para a ESQUERDA, aparece o botão vermelho "Excluir" -->
-                    <SwipeView>
+                    <!-- RECURSO SWIPE MULTIDIRECIONAL:
+                         - Esquerda para Direita: Botão Verde [Editar]
+                         - Direita para Esquerda: Botão Vermelho [Excluir] -->
+                    <SwipeView Margin="14,5"
+                               BackgroundColor="Transparent">
+
+                        <!-- DESLIZAR ESQUERDA -> DIREITA: EDITAR (Verde) -->
+                        <SwipeView.LeftItems>
+                            <SwipeItems Mode="Reveal">
+                                <SwipeItem Text="Editar"
+                                           BackgroundColor="#10B981"
+                                           Invoked="SwipeItem_Editar_Invoked"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+
+                        <!-- DESLIZAR DIREITA -> ESQUERDA: EXCLUIR (Vermelho) -->
                         <SwipeView.RightItems>
-                            <SwipeItems>
+                            <SwipeItems Mode="Reveal">
                                 <SwipeItem Text="Excluir"
-                                           BackgroundColor="#E74C3C"
-                                           IconImageSource="delete.png"
+                                           BackgroundColor="#EF4444"
                                            Invoked="SwipeItem_Excluir_Invoked"
                                            CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
 
-                        <Frame Margin="0,5"
-                               Padding="14"
-                               CornerRadius="10"
-                               HasShadow="True"
-                               BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
-                               BorderColor="{AppThemeBinding Light=#E2E8F0, Dark=#2D3748}">
+                        <!-- Card Padronizado (Design Slim, Meio Quadrado com Cantos Circulares) -->
+                        <Border StrokeShape="RoundRectangle 16"
+                                Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#27272A}"
+                                StrokeThickness="1"
+                                BackgroundColor="{AppThemeBinding Light=White, Dark=#18181B}"
+                                Padding="16,14">
 
-                            <!-- Toque no card abre a edição -->
-                            <Frame.GestureRecognizers>
+                            <!-- Toque no card também abre a tela de edição -->
+                            <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="Frame_Tapped" CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
+                            </Border.GestureRecognizers>
                         
                             <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
                             
-                                <!-- Nome / Descrição do Produto -->
+                                <!-- Nome / Descrição do Produto (Contraste Perfeito no Claro e Escuro) -->
                                 <Label Grid.Row="0" Grid.Column="0"
                                        Text="{Binding Descricao}"
                                        FontSize="16"
                                        FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#2C3E50, Dark=#ECF0F1}" />
+                                       TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"
+                                       VerticalOptions="Center" />
 
-                                <!-- Preço Total deste Item (Qtd x Preço) -->
+                                <!-- Preço Total deste Item (Qtd x Preço) em Destaque Verde -->
                                 <Label Grid.Row="0" Grid.Column="1"
                                        Text="{Binding Total, StringFormat='R$ {0:F2}'}"
                                        FontSize="16"
                                        FontAttributes="Bold"
-                                       TextColor="#27AE60"
-                                       HorizontalOptions="End" />
+                                       TextColor="#10B981"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center" />
 
-                                <!-- Quantidade e Preço Unitário -->
-                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6" Margin="0,4,0,0">
-                                    <Label Text="Qtd:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
-                                    <Label Text="{Binding Quantidade}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
-                                    <Label Text="|" TextColor="LightGray" FontSize="13" />
-                                    <Label Text="Unit:" FontAttributes="Bold" TextColor="Gray" FontSize="13" />
-                                    <Label Text="{Binding Preco, StringFormat='R$ {0:F2}'}" TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" FontSize="13" />
+                                <!-- Tags / Badges Slim para Quantidade e Preço Unitário -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                       Spacing="8"
+                                                       Margin="0,8,0,0"
+                                                       VerticalOptions="Center">
+
+                                    <!-- Badge Quantidade -->
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#27272A}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            Padding="8,3">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="Qtd:"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#A1A1AA}" />
+                                            <Label Text="{Binding Quantidade}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+                                        </HorizontalStackLayout>
+                                    </Border>
+
+                                    <!-- Badge Preço Unitário -->
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#27272A}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            Padding="8,3">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="Unit:"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#A1A1AA}" />
+                                            <Label Text="{Binding Preco, StringFormat='R$ {0:F2}'}"
+                                                   FontSize="12"
+                                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+                                        </HorizontalStackLayout>
+                                    </Border>
+
                                 </HorizontalStackLayout>
                             
                             </Grid>
-                        </Frame>
+                        </Border>
                     </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+
+            <!-- Estado Vazio (EmptyView) Elegante -->
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="10"
+                                     Padding="30"
+                                     Margin="0,40">
+                    <Label Text="🛒"
+                           FontSize="44"
+                           HorizontalOptions="Center" />
+                    <Label Text="Nenhum produto cadastrado"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
+                           HorizontalOptions="Center" />
+                    <Label Text="Toque em '+ Novo' para adicionar itens à sua lista."
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light=#94A3B8, Dark=#71717A}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
         </CollectionView>
 
-        <!-- 3. Barra Inferior fixa com o Total Geral de todas as compras -->
-        <Frame Grid.Row="2"
-               BackgroundColor="{AppThemeBinding Light=#2C3E50, Dark=#1A252F}"
-               Padding="16,12"
-               CornerRadius="0"
-               BorderColor="Transparent">
-            <Grid ColumnDefinitions="*, Auto">
-                <Label Grid.Column="0"
-                       Text="Total das Compras:"
-                       TextColor="White"
-                       FontSize="16"
-                       VerticalOptions="Center" />
-                <Label Grid.Column="1"
-                       x:Name="lbl_total_geral"
-                       Text="R$ 0,00"
-                       TextColor="#2ECC71"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       VerticalOptions="Center" />
+        <!-- 3. Barra Flutuante Slim com o Total Geral (Padrão AAA) -->
+        <Border Grid.Row="2"
+                Margin="14,6,14,14"
+                Padding="16,12"
+                StrokeShape="RoundRectangle 18"
+                Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#27272A}"
+                StrokeThickness="1"
+                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#18181B}">
+            <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                
+                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="TOTAL ACUMULADO"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           TextColor="#94A3B8"
+                           CharacterSpacing="1" />
+                    <Label Text="Minhas Compras"
+                           FontSize="13"
+                           TextColor="#E2E8F0" />
+                </VerticalStackLayout>
+
+                <!-- Badge Verde com Valor Total -->
+                <Border Grid.Column="1"
+                        BackgroundColor="{AppThemeBinding Light=#1E293B, Dark=#064E3B}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="#059669"
+                        StrokeThickness="1"
+                        Padding="14,6"
+                        VerticalOptions="Center">
+                    <Label x:Name="lbl_total_geral"
+                           Text="R$ 0,00"
+                           TextColor="#34D399"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" />
+                </Border>
             </Grid>
-        </Frame>
+        </Border>
 
     </Grid>
 

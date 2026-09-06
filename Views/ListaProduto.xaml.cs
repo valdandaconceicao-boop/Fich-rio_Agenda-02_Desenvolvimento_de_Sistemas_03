@@ -127,6 +127,32 @@ namespace MauiAppMinhasCompras.Views
             }
         }
 
+        // RECURSO NOVO: Deslizar da Esquerda para a Direita -> Editar Produto (Botão Verde)
+        private async void SwipeItem_Editar_Invoked(object sender, EventArgs e)
+        {
+            try
+            {
+                Produto? produto = null;
+                if (sender is SwipeItem swipeItem && swipeItem.CommandParameter is Produto p)
+                {
+                    produto = p;
+                }
+
+                if (produto != null)
+                {
+                    await Navigation.PushAsync(new EditarProduto(produto));
+                }
+                else
+                {
+                    await DisplayAlert("Atenção", "Nenhum produto identificado para edição.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Erro ao abrir edição: {ex.Message}", "OK");
+            }
+        }
+
         // RECURSO NOVO 2: Exclusão por deslize com confirmação via DisplayAlert
         // Combina os 3 recursos: try-catch + menu de contexto (SwipeView) + DisplayAlert
         private async void SwipeItem_Excluir_Invoked(object sender, EventArgs e)

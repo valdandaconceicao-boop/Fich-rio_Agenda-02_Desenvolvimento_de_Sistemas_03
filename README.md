@@ -23,19 +23,20 @@ Este readmap foi estruturado para facilitar a localização imediata de todos os
 | **Persistência Assíncrona SQLite (CRUD)** | [`Helpers/SQLiteDatabaseHelper.cs`](Helpers/SQLiteDatabaseHelper.cs) e [`Models/Produto.cs`](Models/Produto.cs) | **Páginas 3, 4 e 5** — Métodos `Insert`, `Update`, `Delete`, `GetAll`, `Search`. | ✅ **CONFORME** |
 | **Competências 1 e Habilidades 1.1 a 1.5** | Projeto multiplataforma .NET MAUI 9 completo com banco e layout moderno | **Página 1 (Seção 1)** — Tabela de matriz de competências do CEETEPS. | ✅ **CONFORME** |
 
-### 🆕 Agenda 05 — 3 Recursos Novos Adicionados ao App de Compras
+### 🆕 Agenda 05 — Recursos Novos e Design AAA Slim & Elegante
 
-| # | Recurso Exigido | Onde Identificar no Código | Como Funciona | Status |
+| # | Recurso Exigido / Melhoria | Onde Identificar no Código | Como Funciona | Status |
 | :---: | :--- | :--- | :--- | :---: |
-| 1️⃣ | **Try-catch** *(código que não trava quando dá erro)* | [`Views/ListaProduto.xaml.cs` — método `SwipeItem_Excluir_Invoked` (Linhas 133–178)](Views/ListaProduto.xaml.cs#L133-L178) | Todo o fluxo de exclusão está envolvido em `try { } catch (Exception ex) { }`. Se ocorrer qualquer erro (banco corrompido, permissão negada, etc.), o app **não trava** — exibe um alerta amigável com a mensagem do erro. | ✅ **IMPLEMENTADO** |
-| 2️⃣ | **Menu de contexto por deslize** *(SwipeView — deslizar o dedo no item pra aparecer o botão Excluir)* | [`Views/ListaProduto.xaml` — `<SwipeView>` (Linhas 43–94)](Views/ListaProduto.xaml#L43-L94) | Cada item da lista (`CollectionView`) está envolvido em um `<SwipeView>`. Ao deslizar o item para a **esquerda**, aparece um botão vermelho **"Excluir"** (`<SwipeItem>`) por trás do card. | ✅ **IMPLEMENTADO** |
-| 3️⃣ | **DisplayAlert de confirmação** *(janelinha perguntando "Tem certeza?" antes de apagar)* | [`Views/ListaProduto.xaml.cs` — `DisplayAlert` (Linhas 152–157)](Views/ListaProduto.xaml.cs#L152-L157) | Após deslizar e tocar em "Excluir", aparece uma **janelinha popup** perguntando: _"Tem certeza que deseja excluir '[nome do produto]'?"_ com dois botões: **"Sim, excluir"** e **"Cancelar"**. Só apaga se o usuário confirmar. | ✅ **IMPLEMENTADO** |
+| 1️⃣ | **Try-catch** *(código que não trava quando dá erro)* | [`Views/ListaProduto.xaml.cs`](Views/ListaProduto.xaml.cs#L130-L200) | Todo o fluxo de exclusão e edição está envolvido em `try { } catch (Exception ex) { }`. Se ocorrer qualquer erro, o app **não fecha** — exibe um alerta nativo amigável. | ✅ **IMPLEMENTADO** |
+| 2️⃣ | **Menu de contexto por deslize Duplo** *(SwipeView — Esquerda e Direita)* | [`Views/ListaProduto.xaml`](Views/ListaProduto.xaml#L43-L95) | **Multidirecional:**<br>• **Deslizar para a Direita (LeftItems):** Revela botão verde **"Editar"** que abre direto o formulário de edição.<br>• **Deslizar para a Esquerda (RightItems):** Revela botão vermelho **"Excluir"**. | ✅ **IMPLEMENTADO** |
+| 3️⃣ | **DisplayAlert de confirmação** *(janelinha perguntando "Tem certeza?" antes de apagar)* | [`Views/ListaProduto.xaml.cs`](Views/ListaProduto.xaml.cs) | Após deslizar para a esquerda e tocar em "Excluir", abre o popup de confirmação: _"Tem certeza que deseja excluir '[produto]'?"_ com botões **"Sim, excluir"** e **"Cancelar"**. | ✅ **IMPLEMENTADO** |
+| 💎 | **Design AAA Slim & Padronização Visual** *(Cards "meio quadrado com pontas circulares")* | [`Views/ListaProduto.xaml`](Views/ListaProduto.xaml), [`Views/NovoProduto.xaml`](Views/NovoProduto.xaml), [`Views/EditarProduto.xaml`](Views/EditarProduto.xaml) | **Padrão Visual Unificado:**<br>• Cantos arredondados consistentes (`RoundRectangle 16`) em todos os cards e formulários.<br>• Barra de busca integrada com cantos arredondados (`RoundRectangle 14`).<br>• Micro-badges elegantes para Quantidade e Preço Unitário.<br>• Barra flutuante de total com destaque em verde neon (`#34D399`).<br>• Contraste e tipografia calibrados para Dark Mode e Light Mode. | ✅ **PADRONIZADO** |
 
-#### 🎬 Demonstração dos 3 Recursos Novos (Agenda 05)
+#### 🎬 Demonstração dos Recursos Novos e Design AAA (Agenda 05)
 
-> **Prints e vídeo serão adicionados em breve** — mostrando o fluxo completo de deslizar → confirmar → excluir no celular Android.
+> **Prints e vídeo serão adicionados em breve** — demonstrando o fluxo completo: deslizar para a direita (editar), deslizar para a esquerda (excluir), confirmação por alerta e design slim no celular.
 
-| Deslizar para a Esquerda (SwipeView) | Janelinha "Tem certeza?" (DisplayAlert) | Item Excluído com Sucesso |
+| Deslizar p/ Direita (Editar Verde) | Deslizar p/ Esquerda (Excluir Vermelho) | Janelinha "Tem certeza?" (DisplayAlert) |
 | :---: | :---: | :---: |
 | _print pendente_ | _print pendente_ | _print pendente_ |
 

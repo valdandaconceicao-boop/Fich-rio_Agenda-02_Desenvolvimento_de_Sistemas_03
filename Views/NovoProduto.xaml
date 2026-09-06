@@ -1,62 +1,104 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Tela de Cadastro de Novo Produto -->
+<!-- Tela de Cadastro de Novo Produto (Design AAA Slim & Elegante) -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppMinhasCompras.Views.NovoProduto"
              Title="Novo Produto"
-             BackgroundColor="{AppThemeBinding Light=#F4F6F9, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F0F12}">
 
     <!-- Botão de Salvar no canto superior direito da barra de navegação -->
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Salvar" Clicked="ToolbarItem_Clicked" />
     </ContentPage.ToolbarItems>
 
-    <!-- ScrollView para garantir que a tela role caso o teclado suba -->
+    <!-- ScrollView para garantir fluidez ao abrir o teclado -->
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="18">
+        <VerticalStackLayout Padding="20,16" Spacing="16">
             
             <Label Text="Cadastrar Produto"
-                   FontSize="22"
+                   FontSize="20"
                    FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=#2C3E50, Dark=#ECF0F1}"
+                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
                    HorizontalOptions="Center" />
 
-            <!-- Card com o formulário de cadastro -->
-            <Frame CornerRadius="12" Padding="16" HasShadow="True"
-                   BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                   BorderColor="{AppThemeBinding Light=#E2E8F0, Dark=#2D3748}">
-                <VerticalStackLayout Spacing="14">
+            <!-- Card Slim Padronizado (Squircle: RoundRectangle 16) -->
+            <Border StrokeShape="RoundRectangle 16"
+                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#27272A}"
+                    StrokeThickness="1"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#18181B}"
+                    Padding="20">
+                <VerticalStackLayout Spacing="16">
                     
                     <!-- Campo Descrição -->
-                    <Label Text="Descrição do Produto" FontAttributes="Bold" />
-                    <Entry x:Name="txt_descricao"
-                           Placeholder="Ex: Arroz Tipo 1 - 5kg"
-                           ClearButtonVisibility="WhileEditing" />
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Descrição do Produto"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}" />
+                        <Border StrokeShape="RoundRectangle 12"
+                                Stroke="{AppThemeBinding Light=#CBD5E1, Dark=#334155}"
+                                StrokeThickness="1"
+                                BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#27272A}"
+                                Padding="12,0">
+                            <Entry x:Name="txt_descricao"
+                                   Placeholder="Ex: Arroz Tipo 1 - 5kg"
+                                   PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#71717A}"
+                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
+                                   ClearButtonVisibility="WhileEditing" />
+                        </Border>
+                    </VerticalStackLayout>
 
                     <!-- Campo Quantidade -->
-                    <Label Text="Quantidade" FontAttributes="Bold" />
-                    <Entry x:Name="txt_quantidade"
-                           Placeholder="Ex: 2"
-                           Keyboard="Numeric" />
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Quantidade"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}" />
+                        <Border StrokeShape="RoundRectangle 12"
+                                Stroke="{AppThemeBinding Light=#CBD5E1, Dark=#334155}"
+                                StrokeThickness="1"
+                                BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#27272A}"
+                                Padding="12,0">
+                            <Entry x:Name="txt_quantidade"
+                                   Placeholder="Ex: 2"
+                                   PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#71717A}"
+                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
+                                   Keyboard="Numeric" />
+                        </Border>
+                    </VerticalStackLayout>
 
                     <!-- Campo Preço Unitário -->
-                    <Label Text="Preço Unitário (R$)" FontAttributes="Bold" />
-                    <Entry x:Name="txt_preco"
-                           Placeholder="Ex: 25.50"
-                           Keyboard="Numeric" />
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Preço Unitário (R$)"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}" />
+                        <Border StrokeShape="RoundRectangle 12"
+                                Stroke="{AppThemeBinding Light=#CBD5E1, Dark=#334155}"
+                                StrokeThickness="1"
+                                BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#27272A}"
+                                Padding="12,0">
+                            <Entry x:Name="txt_preco"
+                                   Placeholder="Ex: 25.50"
+                                   PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#71717A}"
+                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
+                                   Keyboard="Numeric" />
+                        </Border>
+                    </VerticalStackLayout>
 
-                    <!-- Botão de Ação Salvar -->
+                    <!-- Botão Salvar (Verde Moderno com Cantos Arredondados) -->
                     <Button Text="Salvar Produto"
-                            Margin="0,15,0,0"
-                            BackgroundColor="#27AE60"
+                            Margin="0,8,0,0"
+                            BackgroundColor="#10B981"
                             TextColor="White"
                             FontAttributes="Bold"
-                            CornerRadius="8"
+                            FontSize="15"
+                            CornerRadius="14"
                             HeightRequest="50"
                             Clicked="Button_Clicked_Salvar" />
 
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 
