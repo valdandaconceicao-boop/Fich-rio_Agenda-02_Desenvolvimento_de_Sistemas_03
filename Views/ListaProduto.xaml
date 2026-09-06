@@ -46,25 +46,48 @@
                          - Esquerda para Direita: Botão Verde [Editar]
                          - Direita para Esquerda: Botão Vermelho [Excluir] -->
                     <SwipeView Margin="14,5"
-                               BackgroundColor="Transparent">
+                               BackgroundColor="Transparent"
+                               SwipeEnded="SwipeView_SwipeEnded">
 
-                        <!-- DESLIZAR ESQUERDA -> DIREITA: EDITAR (Verde) -->
+                        <!-- DESLIZAR ESQUERDA -> DIREITA: EDITAR (Verde com cantos arredondados) -->
                         <SwipeView.LeftItems>
-                            <SwipeItems Mode="Reveal">
-                                <SwipeItem Text="Editar"
-                                           BackgroundColor="#10B981"
-                                           Invoked="SwipeItem_Editar_Invoked"
-                                           CommandParameter="{Binding .}" />
+                            <SwipeItems Mode="Execute">
+                                <SwipeItemView Invoked="SwipeItem_Editar_Invoked"
+                                               CommandParameter="{Binding .}">
+                                    <Border StrokeShape="RoundRectangle 16"
+                                            BackgroundColor="#10B981"
+                                            StrokeThickness="0"
+                                            Margin="0,0,8,0"
+                                            Padding="16,0"
+                                            WidthRequest="95"
+                                            VerticalOptions="Fill">
+                                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="4">
+                                            <Label Text="✏️" FontSize="20" HorizontalOptions="Center" />
+                                            <Label Text="Editar" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </SwipeItemView>
                             </SwipeItems>
                         </SwipeView.LeftItems>
 
-                        <!-- DESLIZAR DIREITA -> ESQUERDA: EXCLUIR (Vermelho) -->
+                        <!-- DESLIZAR DIREITA -> ESQUERDA: EXCLUIR (Vermelho com cantos arredondados) -->
                         <SwipeView.RightItems>
-                            <SwipeItems Mode="Reveal">
-                                <SwipeItem Text="Excluir"
-                                           BackgroundColor="#EF4444"
-                                           Invoked="SwipeItem_Excluir_Invoked"
-                                           CommandParameter="{Binding .}" />
+                            <SwipeItems Mode="Execute">
+                                <SwipeItemView Invoked="SwipeItem_Excluir_Invoked"
+                                               CommandParameter="{Binding .}">
+                                    <Border StrokeShape="RoundRectangle 16"
+                                            BackgroundColor="#EF4444"
+                                            StrokeThickness="0"
+                                            Margin="8,0,0,0"
+                                            Padding="16,0"
+                                            WidthRequest="95"
+                                            VerticalOptions="Fill">
+                                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="4">
+                                            <Label Text="🗑️" FontSize="20" HorizontalOptions="Center" />
+                                            <Label Text="Excluir" TextColor="White" FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </SwipeItemView>
                             </SwipeItems>
                         </SwipeView.RightItems>
 

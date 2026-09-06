@@ -127,50 +127,39 @@ namespace MauiAppMinhasCompras.Views
             }
         }
 
-        // RECURSO NOVO: Deslizar da Esquerda para a Direita -> Editar Produto (Botão Verde)
-        private async void SwipeItem_Editar_Invoked(object sender, EventArgs e)
+        // Flag de controle para evitar disparo duplo de ações simultâneas de swipe
+        private bool _isProcessingSwipe = false;
+
+        // Executa a navegação para edição de forma segura
+        private async Task ExecutarEdicao(Produto? produto, SwipeView? swipeView = null)
         {
+            if (_isProcessingSwipe || produto == null) return;
+            _isProcessingSwipe = true;
+
             try
             {
-                Produto? produto = null;
-                if (sender is SwipeItem swipeItem && swipeItem.CommandParameter is Produto p)
-                {
-                    produto = p;
-                }
-
-                if (produto != null)
-                {
-                    await Navigation.PushAsync(new EditarProduto(produto));
-                }
-                else
-                {
-                    await DisplayAlert("Atenção", "Nenhum produto identificado para edição.", "OK");
-                }
+                swipeView?.Close();
+                await Navigation.PushAsync(new EditarProduto(produto));
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Erro", $"Erro ao abrir edição: {ex.Message}", "OK");
             }
+            finally
+            {
+                _isProcessingSwipe = false;
+            }
         }
 
-        // RECURSO NOVO 2: Exclusão por deslize com confirmação via DisplayAlert
-        // Combina os 3 recursos: try-catch + menu de contexto (SwipeView) + DisplayAlert
-        private async void SwipeItem_Excluir_Invoked(object sender, EventArgs e)
+        // Executa o fluxo de exclusão com confirmação via DisplayAlert e proteção try-catch
+        private async Task ExecutarExclusao(Produto? produto, SwipeView? swipeView = null)
         {
+            if (_isProcessingSwipe || produto == null) return;
+            _isProcessingSwipe = true;
+
             try
             {
-                // Obtém o produto vinculado ao SwipeItem que foi deslizado
-                Produto? produto = null;
-                if (sender is SwipeItem swipeItem && swipeItem.CommandParameter is Produto p)
-                {
-                    produto = p;
-                }
-
-                if (produto == null)
-                {
-                    await DisplayAlert("Erro", "Nenhum produto identificado para exclusão.", "OK");
-                    return;
-                }
+                swipeView?.Close();
 
                 // RECURSO NOVO 3: DisplayAlert de confirmação ("Tem certeza?")
                 bool confirmar = await DisplayAlert(
@@ -181,7 +170,7 @@ namespace MauiAppMinhasCompras.Views
 
                 if (!confirmar) return;
 
-                // Exclui do banco SQLite
+                // Exclui do banco SQLite de forma assíncrona
                 await App.Db.Delete(produto.Id);
 
                 // Remove da lista em memória e da ObservableCollection visível
@@ -196,9 +185,71 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                // try-catch: se der qualquer erro, o app NÃO trava
+                // RECURSO NOVO 1: try-catch garante que se der erro o app não trave
                 await DisplayAlert("Erro", $"Erro ao excluir: {ex.Message}", "OK");
             }
+            finally
+            {
+                _isProcessingSwipe = false;
+            }
+        }
+
+        // RECURSO DE AUTOMATIZAÇÃO: Disparado assim que o usuário faz o gesto de deslizar!
+        // Deslizar para a esquerda -> abre a confirmação de exclusão automaticamente
+        // Deslizar para a direita  -> abre a tela de edição automaticamente
+        private async void SwipeView_SwipeEnded(object sender, SwipeEndedEventArgs e)
+        {
+            if (sender is SwipeView swipeView && swipeView.BindingContext is Produto produto)
+            {
+                // Gesto da Direita para a Esquerda (Left): Excluir
+                if (e.SwipeDirection == SwipeDirection.Left)
+                {
+                    await ExecutarExclusao(produto, swipeView);
+                }
+                // Gesto da Esquerda para a Direita (Right): Editar
+                else if (e.SwipeDirection == SwipeDirection.Right)
+                {
+                    await ExecutarEdicao(produto, swipeView);
+                }
+            }
+        }
+
+        // Handler do botão Editar (SwipeItemView ou SwipeItem)
+        private async void SwipeItem_Editar_Invoked(object sender, EventArgs e)
+        {
+            Produto? produto = null;
+            SwipeView? swipeView = null;
+
+            if (sender is SwipeItemView swipeItemView)
+            {
+                produto = swipeItemView.CommandParameter as Produto;
+                swipeView = swipeItemView.Parent?.Parent as SwipeView;
+            }
+            else if (sender is SwipeItem swipeItem)
+            {
+                produto = swipeItem.CommandParameter as Produto;
+            }
+
+            await ExecutarEdicao(produto, swipeView);
+        }
+
+        // Handler do botão Excluir (SwipeItemView ou SwipeItem)
+        private async void SwipeItem_Excluir_Invoked(object sender, EventArgs e)
+        {
+            Produto? produto = null;
+            SwipeView? swipeView = null;
+
+            if (sender is SwipeItemView swipeItemView)
+            {
+                produto = swipeItemView.CommandParameter as Produto;
+                swipeView = swipeItemView.Parent?.Parent as SwipeView;
+            }
+            else if (sender is SwipeItem swipeItem)
+            {
+                produto = swipeItem.CommandParameter as Produto;
+            }
+
+            await ExecutarExclusao(produto, swipeView);
         }
     }
 }
